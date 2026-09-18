@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MIME Multipart 报文检查器</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>MIME Multipart 报文检查器</h1>
+    <p>按 RFC 2046 解析嵌套 multipart · 支持引号参数与 CRLF 边界 · 可编辑部件后重新编码并下载</p>
+  </header>
+
+  <main>
+    <section class="card" id="input-section">
+      <h2>输入</h2>
+      <div class="grid">
+        <div class="field">
+          <label class="field-label" for="mode">报文模式</label>
+          <select id="mode">
+            <option value="body">仅主体（multipart body）</option>
+            <option value="message">完整报文（含头部）</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="content-type">Content-Type</label>
+          <input id="content-type" type="text" spellcheck="false"
+                 placeholder='multipart/mixed; boundary="frontier"'>
+        </div>
+        <div class="field">
+          <label class="field-label" for="boundary">Boundary（可选，留空则从 Content-Type 提取）</label>
+          <input id="boundary" type="text" spellcheck="false" placeholder="frontier">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="raw-body">原始报文</label>
+        <textarea id="raw-body" class="mono" rows="14" spellcheck="false"
+                  placeholder="--frontier&#10;Content-Type: text/plain&#10;&#10;Hello, world!&#10;--frontier--"></textarea>
+      </div>
+      <div class="btn-row">
+        <button id="parse-btn" class="primary">解 析</button>
+        <button id="sample-btn">载入正常示例</button>
+        <button id="bad-sample-btn">载入含错误示例</button>
+        <label class="file-label">
+          从文件导入
+          <input type="file" id="file-input" hidden>
+        </label>
+        <button id="clear-btn" class="ghost">清空</button>
+      </div>
+      <div id="error-banner" class="hidden"></div>
+    </section>
+
+    <section class="card hidden" id="issues-section">
+      <h2>解析结果</h2>
+      <div id="meta"></div>
+      <div id="issues-summary"></div>
+      <div id="issues"></div>
+    </section>
+
+    <section class="card hidden" id="tree-section">
+      <h2>部件结构 <span class="hint">（头部与正文可直接编辑）</span></h2>
+      <div id="message-headers-wrap" class="field hidden">
+        <label class="field-label" for="message-headers">报文头部（将包含在重新编码的输出中）</label>
+        <textarea id="message-headers" class="mono" rows="4" spellcheck="false"></textarea>
+      </div>
+      <div id="tree"></div>
+      <div class="btn-row">
+        <button id="encode-btn" class="primary">重新编码</button>
+        <span class="muted align-center">按原 boundary 规则重新组装，换行统一为 CRLF</span>
+      </div>
+    </section>
+
+    <section class="card hidden" id="output-section">
+      <h2>重新编码结果</h2>
+      <div id="encode-meta" class="muted"></div>
+      <div class="field">
+        <textarea id="encoded-output" class="mono" rows="14" readonly spellcheck="false"></textarea>
+      </div>
+      <div class="btn-row">
+        <button id="download-btn" class="primary">下载报文</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    FastAPI + 原生前端 · 解析逻辑遵循 RFC 2046 / RFC 2045
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
